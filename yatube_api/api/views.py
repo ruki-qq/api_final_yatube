@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
-from api.mixins import ListCreateModelViewSet
+from api.mixins import ListCreateModelMixinViewSet
 from api.permissions import IsAuthenticatedAuthorOrReadOnly
 from api.serializers import (
     CommentSerializer,
@@ -48,7 +48,7 @@ class GroupModelViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupSerializer
 
 
-class FollowModelViewSet(ListCreateModelViewSet):
+class FollowModelViewSet(ListCreateModelMixinViewSet):
     """Provides list and create actions for followings."""
 
     serializer_class = FollowSerializer
