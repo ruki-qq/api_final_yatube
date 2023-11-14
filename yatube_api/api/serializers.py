@@ -51,18 +51,20 @@ class FollowSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), slug_field='username'
     )
 
+    class Meta:
+        model = Follow
+        exclude = ['id']
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=['user', 'following'],
+                message='User already follows target.',
+            )
+        ]
+
     def validate_following(self, value):
         """Checks that user is not trying to follow himself."""
 
         if self.context.get('request').user == value:
             raise serializers.ValidationError('User cannot follow himself.')
         return value
-
-    class Meta:
-        model = Follow
-        fields = '__all__'
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(), fields=['user', 'following']
-            )
-        ]

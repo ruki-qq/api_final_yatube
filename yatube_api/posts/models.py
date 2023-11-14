@@ -52,7 +52,17 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='follows'
     )
-    following = models.ForeignKey(User, on_delete=models.CASCADE)
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='followed'
+    )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('following')),
+                name='user!=following',
+            )
+        ]
 
     def __str__(self):
-        return f'{self.user.username} follows {self.following.username}'
+        return f'{self.user} follows {self.following}'

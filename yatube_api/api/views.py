@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, permissions, viewsets
+from rest_framework import filters, permissions, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
+from api.mixins import ListCreateModelViewSet
 from api.permissions import IsAuthenticatedAuthorOrReadOnly
 from api.serializers import (
     CommentSerializer,
@@ -47,16 +48,11 @@ class GroupModelViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GroupSerializer
 
 
-class FollowModelViewSet(
-    mixins.CreateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
-):
+class FollowModelViewSet(ListCreateModelViewSet):
     """Provides list and create actions for followings."""
 
     serializer_class = FollowSerializer
-    permission_classes = [
-        IsAuthenticatedAuthorOrReadOnly,
-        permissions.IsAuthenticated,
-    ]
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['following__username']
 
